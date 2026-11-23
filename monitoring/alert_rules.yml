@@ -1,0 +1,29 @@
+groups:
+  - name: sre_golden_signals_alerts
+    rules:
+      - alert: ServiceDown
+        expr: up{job="sre-app"} == 0
+        for: 30s
+        labels:
+          severity: critical
+        annotations:
+          summary: "SRE App instance is DOWN"
+          description: "Prometheus cannot scrape /metrics from {{ $labels.instance }} for more than 30s."
+
+      - alert: HighErrorRate
+        expr: rate(http_request_errors_total[5m]) > 0.05
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "High 5xx Error Rate detected"
+          description: "Error rate exceeded 5% over the last 5 minutes — Error Budget burning fast! See RUNBOOK.md."
+
+      - alert: ErrorBudgetExhausted
+        expr: app_error_budget_remaining_ratio < 0.2
+        for: 2m
+        labels:
+          severity: warning
+        annotations:
+          summary: "SLO Error Budget below 20%"
+          description: "Freeze non-critical deployments and prioritize reliability fixes."

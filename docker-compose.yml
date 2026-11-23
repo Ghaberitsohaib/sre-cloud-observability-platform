@@ -1,0 +1,48 @@
+services:
+  sre-app:
+    build: .
+    container_name: sre-app
+    ports:
+      - "8080:8080"
+    environment:
+      - PORT=8080
+      - CLOUD_REGION=europe-west1
+    restart: unless-stopped
+    networks:
+      - sre-net
+
+  prometheus:
+    image: prom/prometheus:v2.54.1
+    container_name: sre-prometheus
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - ./monitoring/alert_rules.yml:/etc/prometheus/alert_rules.yml:ro
+    command:
+      - "--config.file=/etc/prometheus/prometheus.yml"
+      - "--storage.tsdb.retention.time=15d"
+    ports:
+      - "9090:9090"
+    depends_on:
+      sre-app:
+        condition: service_healthy
+    restart: unless-stopped
+    networks:
+      - sre-net
+
+  grafana:
+    image: grafana/grafana:11.2.0
+    container_name: sre-grafana
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    depends_on:
+      - prometheus
+    restart: unless-stopped
+    networks:
+      - sre-net
+
+networks:
+  sre-net:
+    driver: bridge
