@@ -93,10 +93,10 @@ DASHBOARD_HTML = """<!DOCTYPE html>
 <title>sre-cloud-observability-platform</title>
 <style>
   :root {
-    --bg: #09090b;
-    --surface: #111113;
-    --border: #27272a;
-    --text: #fafafa;
+    --bg: #fafafa;
+    --surface: #ffffff;
+    --border: #e4e4e7;
+    --text: #18181b;
     --muted: #71717a;
     --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
   }
@@ -107,9 +107,9 @@ DASHBOARD_HTML = """<!DOCTYPE html>
     font-family: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", sans-serif;
     font-size: 13px;
     line-height: 1.5;
-    padding: 32px 24px;
+    padding: 36px 24px;
   }
-  .wrap { max-width: 960px; margin: 0 auto; }
+  .wrap { max-width: 940px; margin: 0 auto; }
   header {
     display: flex;
     justify-content: space-between;
@@ -118,40 +118,45 @@ DASHBOARD_HTML = """<!DOCTYPE html>
     padding-bottom: 14px;
     margin-bottom: 24px;
   }
-  h1 { font-size: 15px; font-weight: 600; font-family: var(--mono); letter-spacing: -0.02em; }
+  h1 { font-size: 16px; font-weight: 600; font-family: var(--mono); letter-spacing: -0.02em; color: var(--text); }
   .meta { color: var(--muted); font-family: var(--mono); font-size: 12px; }
   .metrics-row {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
     background: var(--surface);
     margin-bottom: 20px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
   }
   .metric {
-    padding: 14px 16px;
+    padding: 16px 18px;
     border-right: 1px solid var(--border);
   }
   .metric:last-child { border-right: none; }
-  .metric-label { color: var(--muted); font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; }
+  .metric-label { color: var(--muted); font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; font-weight: 500; }
   .metric-val { font-family: var(--mono); font-size: 20px; font-weight: 600; margin-top: 4px; color: var(--text); }
   .toolbar {
     display: flex;
     flex-wrap: wrap;
     gap: 8px;
-    margin-bottom: 20px;
+    margin-bottom: 22px;
   }
   button, a.cmd {
     background: var(--surface);
     color: var(--text);
     border: 1px solid var(--border);
+    border-radius: 6px;
     padding: 6px 12px;
     font-family: var(--mono);
     font-size: 12px;
     cursor: pointer;
     text-decoration: none;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
     transition: border-color 0.12s, background 0.12s;
   }
-  button:hover, a.cmd:hover { border-color: #52525b; background: #18181b; }
+  button:hover, a.cmd:hover { border-color: #a1a1aa; background: #f4f4f5; }
   .section-title {
     font-size: 11px;
     text-transform: uppercase;
@@ -163,12 +168,14 @@ DASHBOARD_HTML = """<!DOCTYPE html>
   pre {
     background: var(--surface);
     border: 1px solid var(--border);
-    padding: 16px;
+    border-radius: 8px;
+    padding: 16px 18px;
     overflow-x: auto;
     font-family: var(--mono);
     font-size: 12px;
-    line-height: 1.6;
-    color: #d4d4d8;
+    line-height: 1.65;
+    color: #27272a;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
   }
 </style>
 </head>
