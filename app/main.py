@@ -90,58 +90,127 @@ DASHBOARD_HTML = """<!DOCTYPE html>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SRE Cloud Observability Platform — Sohaib Ghaberit</title>
+<title>sre-cloud-observability-platform</title>
 <style>
-  body { background:#0b1120; color:#e2e8f0; font-family:system-ui,-apple-system,sans-serif; margin:0; padding:32px; }
-  .wrap { max-width:900px; margin:0 auto; }
-  h1 { color:#38bdf8; margin-bottom:6px; }
-  .sub { color:#94a3b8; margin-bottom:24px; }
-  .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:14px; margin-bottom:24px; }
-  .card { background:#1e293b; border:1px solid #334155; border-radius:12px; padding:16px; }
-  .label { font-size:0.8rem; color:#94a3b8; text-transform:uppercase; }
-  .val { font-size:1.6rem; font-weight:800; margin-top:6px; color:#22c55e; }
-  .btns { display:flex; flex-wrap:wrap; gap:10px; margin-bottom:20px; }
-  button, a.btn { background:#0ea5e9; color:#000; font-weight:700; border:none; padding:10px 16px; border-radius:8px; cursor:pointer; text-decoration:none; }
-  button.warn { background:#f59e0b; }
-  button.danger { background:#ef4444; color:#fff; }
-  pre { background:#020617; border:1px solid #1e293b; border-radius:10px; padding:16px; overflow:auto; font-size:0.85rem; color:#a5f3fc; }
+  :root {
+    --bg: #09090b;
+    --surface: #111113;
+    --border: #27272a;
+    --text: #fafafa;
+    --muted: #71717a;
+    --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", sans-serif;
+    font-size: 13px;
+    line-height: 1.5;
+    padding: 32px 24px;
+  }
+  .wrap { max-width: 960px; margin: 0 auto; }
+  header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 14px;
+    margin-bottom: 24px;
+  }
+  h1 { font-size: 15px; font-weight: 600; font-family: var(--mono); letter-spacing: -0.02em; }
+  .meta { color: var(--muted); font-family: var(--mono); font-size: 12px; }
+  .metrics-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    border: 1px solid var(--border);
+    background: var(--surface);
+    margin-bottom: 20px;
+  }
+  .metric {
+    padding: 14px 16px;
+    border-right: 1px solid var(--border);
+  }
+  .metric:last-child { border-right: none; }
+  .metric-label { color: var(--muted); font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; }
+  .metric-val { font-family: var(--mono); font-size: 20px; font-weight: 600; margin-top: 4px; color: var(--text); }
+  .toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 20px;
+  }
+  button, a.cmd {
+    background: var(--surface);
+    color: var(--text);
+    border: 1px solid var(--border);
+    padding: 6px 12px;
+    font-family: var(--mono);
+    font-size: 12px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: border-color 0.12s, background 0.12s;
+  }
+  button:hover, a.cmd:hover { border-color: #52525b; background: #18181b; }
+  .section-title {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+    margin-bottom: 8px;
+    font-family: var(--mono);
+  }
+  pre {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 16px;
+    overflow-x: auto;
+    font-family: var(--mono);
+    font-size: 12px;
+    line-height: 1.6;
+    color: #d4d4d8;
+  }
 </style>
 </head>
 <body>
 <div class="wrap">
-  <h1>SRE Cloud Observability Platform</h1>
-  <div class="sub">Golden Signals (Traffic • Errors • Latency • Saturation) | SLO Target: 99.9% | By Sohaib Ghaberit</div>
-  <div class="grid">
-    <div class="card"><div class="label">Service Health</div><div class="val" id="healthVal">CHECKING...</div></div>
-    <div class="card"><div class="label">Availability SLI</div><div class="val" id="sliVal">100.00%</div></div>
-    <div class="card"><div class="label">5xx Errors</div><div class="val" id="errVal" style="color:#f87171;">0</div></div>
-    <div class="card"><div class="label">Uptime</div><div class="val" id="upVal">0s</div></div>
+  <header>
+    <h1>sre-cloud-observability-platform</h1>
+    <div class="meta">SLO 99.9% &middot; Prometheus /metrics &middot; europe-west1</div>
+  </header>
+
+  <div class="metrics-row">
+    <div class="metric"><div class="metric-label">Status</div><div class="metric-val" id="healthVal">--</div></div>
+    <div class="metric"><div class="metric-label">Availability SLI</div><div class="metric-val" id="sliVal">--</div></div>
+    <div class="metric"><div class="metric-label">5xx Errors</div><div class="metric-val" id="errVal">0</div></div>
+    <div class="metric"><div class="metric-label">Uptime</div><div class="metric-val" id="upVal">0s</div></div>
   </div>
-  <div class="btns">
-    <button onclick="hit('/api/orders')">Normal Request (/api/orders)</button>
-    <button class="warn" onclick="hit('/simulate/slow')">Inject Latency (/simulate/slow)</button>
-    <button class="danger" onclick="hit('/simulate/error')">Inject 500 Error (/simulate/error)</button>
-    <a class="btn" href="/metrics" target="_blank">Open Raw /metrics</a>
-    <a class="btn" href="/health" target="_blank">Open /health</a>
+
+  <div class="toolbar">
+    <button onclick="hit('/api/orders')">GET /api/orders</button>
+    <button onclick="hit('/simulate/slow')">GET /simulate/slow</button>
+    <button onclick="hit('/simulate/error')">GET /simulate/error</button>
+    <a class="cmd" href="/metrics" target="_blank">/metrics</a>
+    <a class="cmd" href="/health" target="_blank">/health</a>
+    <a class="cmd" href="/ready" target="_blank">/ready</a>
   </div>
-  <pre id="metricsBox">Loading Prometheus /metrics...</pre>
+
+  <div class="section-title">Prometheus Exposition (/metrics)</div>
+  <pre id="metricsBox">loading...</pre>
 </div>
 <script>
 async function refresh() {
   const h = await fetch('/health').then(r => r.json());
-  document.getElementById('healthVal').textContent = h.status.toUpperCase();
+  document.getElementById('healthVal').textContent = h.status;
   document.getElementById('upVal').textContent = Math.floor(h.uptime_seconds) + 's';
   const m = await fetch('/metrics').then(r => r.text());
   document.getElementById('metricsBox').textContent = m;
   const sli = m.match(/app_sli_availability_ratio ([0-9.]+)/);
-  if (sli) document.getElementById('sliVal').textContent = (parseFloat(sli[1])*100).toFixed(2) + '%';
+  if (sli) document.getElementById('sliVal').textContent = (parseFloat(sli[1]) * 100).toFixed(2) + '%';
   const err = m.match(/http_request_errors_total ([0-9]+)/);
   if (err) document.getElementById('errVal').textContent = err[1];
 }
-async function hit(path) {
-  await fetch(path);
-  refresh();
-}
+async function hit(path) { await fetch(path); refresh(); }
 refresh();
 setInterval(refresh, 3000);
 </script>
